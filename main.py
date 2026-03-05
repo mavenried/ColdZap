@@ -31,7 +31,7 @@ intro_sound = pg.mixer.Sound("assets/audio/Level-Intro.wav")
 def load_settings():
     global music_playing, current_song
 
-    with open("GameData/settings.json") as f:
+    with open("gamedata/settings.json") as f:
         settings = json.load(f)
         if settings["music"] == 0:
             music_playing = False
@@ -66,7 +66,7 @@ def main(saved=False):
             return False
 
     if saved:
-        with open("Gamedata/saves.json") as f:
+        with open("gamedata/saves.json") as f:
             save = json.load(f)
             level = save["levelId"]
             score = save["score"]
@@ -76,10 +76,11 @@ def main(saved=False):
         score = 0
         lives = 5
 
-        with open("Gamedata/saves.json", "w") as f:
-            json.dump({"levelId": level, "score": score, "lives": lives}, f,indent=4)
+        with open("gamedata/saves.json", "w") as f:
+            json.dump({"levelId": level, "score": score,
+                      "lives": lives}, f, indent=4)
 
-    with open(f"Gamedata/Levels/Level{level}.json") as f:
+    with open(f"gamedata/Levels/level{level}.json") as f:
         level_data = json.load(f)
     for i in level_data["enemies"]:
         utils.Enemy(
@@ -136,7 +137,8 @@ def main(saved=False):
         if utils.update_enemies(screen):
             score += 10  # update enemies and add 10 to score if enemy is killed
 
-        df.draw_ui(screen, Comfortaa_small, level, score, player.health)  # draw ui
+        df.draw_ui(screen, Comfortaa_small, level,
+                   score, player.health)  # draw ui
 
         if back_button.update(
             screen, pg.mouse.get_pos() if pg.mouse.get_pressed()[0] else (0, 0)
@@ -145,14 +147,14 @@ def main(saved=False):
             return menu, ()
 
         if player.health == 0:
-            with open("Gamedata/saves.json", "w") as f:
-                json.dump({"levelId": 0, "score": 0, "lives": 5}, f,indent=4)
+            with open("gamedata/saves.json", "w") as f:
+                json.dump({"levelId": 0, "score": 0, "lives": 5}, f, indent=4)
 
-            with open("Gamedata/highscores.json", "r") as f:
+            with open("gamedata/highscores.json", "r") as f:
                 highscores = json.load(f)
             if score > int(highscores["highscore"]):
-                with open("Gamedata/highscores.json", "w") as f:
-                    json.dump({"highscore": str(score)}, f,indent=4)
+                with open("gamedata/highscores.json", "w") as f:
+                    json.dump({"highscore": str(score)}, f, indent=4)
 
             df.fade_to(screen, (0, 0, 0), 0.15)
             return you_died, ()
@@ -162,20 +164,22 @@ def main(saved=False):
         if wincheck():
             df.fade_to(screen, (0, 0, 0), 0.5)
             if level + 1 == 5:
-                raise NotImplementedError(f"Level {level+1} not implemented yet")
+                raise NotImplementedError(
+                    f"Level {level+1} not implemented yet")
             else:
-                with open("GameData/saves.json", "w") as f:
+                with open("gamedata/saves.json", "w") as f:
                     print(level + 1)
                     json.dump(
-                        {"levelId": level + 1, "score": score, "lives": player.health},
+                        {"levelId": level + 1, "score": score,
+                            "lives": player.health},
                         f,
                         indent=4
                     )
-            with open("Gamedata/highscores.json", "r") as f:
+            with open("gamedata/highscores.json", "r") as f:
                 highscores = json.load(f)
             if score > int(highscores["highscore"]):
-                with open("Gamedata/highscores.json", "w") as f:
-                    json.dump({"highscore": str(score)}, f,indent=4)
+                with open("gamedata/highscores.json", "w") as f:
+                    json.dump({"highscore": str(score)}, f, indent=4)
 
             return main, (True,)
 
@@ -229,6 +233,7 @@ def menu():
     global quit
 
     load_settings()
+
     def event_handler():
         for event in pg.event.get():
             if event.type == pg.KEYDOWN:
@@ -265,7 +270,8 @@ def menu():
             pg.mouse.get_pos() if pg.mouse.get_pressed()[0] else (0, 0)
         )  # get mouse position if mouse is pressed, else (0,0)
 
-        df.draw_txt(screen, "ColdZap", 175 * SCALE, 100 * SCALE, (0, 0, 0), Comfortaa)
+        df.draw_txt(screen, "ColdZap", 175 * SCALE,
+                    100 * SCALE, (0, 0, 0), Comfortaa)
 
         if quit_game.update(screen, mouse_pos):
             df.fade_to(screen, (0, 0, 0), 0.15)
@@ -291,7 +297,7 @@ def menu():
 
 # ----------------------------------------------
 def highscore():
-    with open("Gamedata/highscores.json") as f:
+    with open("gamedata/highscores.json") as f:
         highscore = json.load(f)
 
     labels = [
@@ -359,7 +365,8 @@ def settings():
         return False, ()
 
     music_button = utils.TxtButton(
-        175 * SCALE, 100 * SCALE, f"Music : {current_song}", (0, 0, 0), Comfortaa_small
+        175 * SCALE, 100 *
+        SCALE, f"Music : {current_song}", (0, 0, 0), Comfortaa_small
     )
     menu_button = utils.TxtButton(
         175 * SCALE, 150 * SCALE, "Back to menu", (0, 0, 0), Comfortaa_small
@@ -380,26 +387,26 @@ def settings():
             # cycle through songs
             if current_song == "Nothing":
                 current_song = "Astra"
-                with open("GameData/settings.json") as f:
+                with open("gamedata/settings.json") as f:
                     settings = json.load(f)
                     settings["music"] = 1
-                with open("GameData/settings.json", "w") as f:
-                    json.dump(settings, f,indent=4)
+                with open("gamedata/settings.json", "w") as f:
+                    json.dump(settings, f, indent=4)
             elif current_song == "Astra":
                 current_song = "Supert"
-                with open("GameData/settings.json") as f:
+                with open("gamedata/settings.json") as f:
                     settings = json.load(f)
                     settings["music"] = 2
-                with open("GameData/settings.json", "w") as f:
-                    json.dump(settings, f,indent=4)
+                with open("gamedata/settings.json", "w") as f:
+                    json.dump(settings, f, indent=4)
             elif current_song == "Supert":
                 current_song = "Nothing"
 
-                with open("GameData/settings.json") as f:
+                with open("gamedata/settings.json") as f:
                     settings = json.load(f)
                     settings["music"] = 0
-                with open("GameData/settings.json", "w") as f:
-                    json.dump(settings, f,indent=4)
+                with open("gamedata/settings.json", "w") as f:
+                    json.dump(settings, f, indent=4)
 
             load_settings()
             music_button.txt = f"Music : {current_song}"

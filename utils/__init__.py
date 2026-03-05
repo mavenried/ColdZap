@@ -22,11 +22,11 @@ def displayBullets(screen):
 
 # ----------------------------------------------
 def update_enemies(screen):
-    hit = False
+    kill = False
     for i in Enemylist:
         if i.update(screen):
-            hit = True
-    return hit
+            kill = True
+    return kill
 
 
 # ----------------------------------------------

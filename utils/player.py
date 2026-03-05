@@ -14,7 +14,7 @@ This file contains the player class.
 class Player:
 
     """
-    INITALIZE THE PLAYER
+    INITIALIZE THE PLAYER
     Syntax: Player(x, y, health)
 
     :param x: x position of the player

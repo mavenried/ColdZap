@@ -1,3 +1,4 @@
+from utils import SCALE
 import pygame as pg
 import json
 
@@ -8,7 +9,6 @@ A simple utility to create levels for the game.
 LEVEL_ID = 4  # Change this to the level you want to edit
 IMPLEMENTED_LEVELS = [1, 2, 3, 4]  # Add the levels you have implemented here
 
-from utils import SCALE
 
 COLORS = [
     "white",
@@ -31,7 +31,7 @@ bfont = pg.font.Font("assets/fonts/Comfortaa.ttf", 40)
 
 
 def load_tiles(level_id):
-    data = json.load(open("Gamedata/Levels/level" + str(level_id) + ".json"))
+    data = json.load(open("gamedata/Levels/level" + str(level_id) + ".json"))
     tiles = [Tile(x, y) for x in range(7) for y in range(9)]
 
     for tile in tiles:
@@ -50,7 +50,8 @@ def load_tiles(level_id):
 
             if enemy_positions[0] == [tile.x, tile.y]:
                 tile.txt = "E" if enemy["type"] == "glider" else "AE"
-                tile.value = REFERENCES[tile.txt](tile.x, tile.y, enemy_positions)
+                tile.value = REFERENCES[tile.txt](
+                    tile.x, tile.y, enemy_positions)
 
     return tiles
 
@@ -86,7 +87,7 @@ def encode_into(filename, tiles):
                 "positions": tile.value.positions,
             }
 
-    json.dump(data, open("Gamedata/Levels/" + filename, "w"), indent=4)
+    json.dump(data, open("gamedata/Levels/" + filename, "w"), indent=4)
 
 
 class WallTile:
@@ -176,7 +177,8 @@ class Tile:
                     self.value = None
                 else:
                     self.txt = str(currently_selected)
-                    self.value = REFERENCES[currently_selected.txt](self.x, self.y)
+                    self.value = REFERENCES[currently_selected.txt](
+                        self.x, self.y)
 
 
 class TileSelector:
@@ -238,7 +240,8 @@ REFERENCES = {
     "P": PitTile,
     "O": PlayerTile,
     "E": EnemyTile,
-    "AE": AdvancedEnemyTile,  # This is not used in the game, but it is here for future use.
+    # This is not used in the game, but it is here for future use.
+    "AE": AdvancedEnemyTile,
     "G": GoalTile,
 }
 TILES = (
@@ -283,14 +286,16 @@ while True:
             color,
             False,
             [
-                (x * 40 * SCALE + 10 + SCALE * 20, y * 40 * SCALE + 70 + SCALE * 20)
+                (x * 40 * SCALE + 10 + SCALE * 20,
+                 y * 40 * SCALE + 70 + SCALE * 20)
                 for x, y in path
             ],
             2,
         )
 
     debug(
-        f"Currently selected: {currently_selected} | Mode: {mode} | Positions: {str(positions)}"
+        f"Currently selected: {currently_selected} | Mode: {
+            mode} | Positions: {str(positions)}"
     )
 
     pg.display.flip()

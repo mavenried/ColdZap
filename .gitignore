@@ -6,4 +6,4 @@ replit.nix
 *.pyc
 saves.json
 ~$oject_record.docx
-
+.idea
